@@ -40,9 +40,11 @@ def model(data = data):
                      obs = torch.tensor(data))
   
 def guide(data = data):
+        def guide(data = data):
         a = pyro.param("a", torch.tensor(1.0))
         b = pyro.param("b", torch.tensor(1.0))
-        conc = pyro.param("q_conc", torch.ones(colors))        pyro.sample("alpha", dist.Gamma(a,b))
+        concentrations = pyro.param("concentrations", torch.ones(colors))
+        pyro.sample("alpha", dist.Gamma(a,b))
         pyro.sample("betas", dist.Dirichlet(conc))
 
 ### Define inference loop ###
@@ -64,7 +66,7 @@ train(model,guide)
 ### Save parameters ###
 k = pyro.param("a")
 rate = pyro.param("b")
-pop_dist = pyro.param("q_conc")
+pop_dist = pyro.param("concentrations")
 
 mean_alpha = dist.Gamma(k,rate).mean
 dir_params = mean_alpha*pop_dist
