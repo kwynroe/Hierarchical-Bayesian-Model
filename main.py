@@ -13,7 +13,6 @@ import pyro.contrib
 from pyro.infer import SVI, Trace_ELBO
 from pyro.optim import Adam
 
-
 pyro.enable_validation(True)
 pyro.clear_param_store()
 
@@ -43,8 +42,7 @@ def model(data = data):
 def guide(data = data):
         a = pyro.param("a", torch.tensor(1.0))
         b = pyro.param("b", torch.tensor(1.0))
-        conc = pyro.param("q_conc", torch.ones(colors))
-        pyro.sample("alpha", dist.Gamma(a,b))
+        conc = pyro.param("q_conc", torch.ones(colors))        pyro.sample("alpha", dist.Gamma(a,b))
         pyro.sample("betas", dist.Dirichlet(conc))
 
 ### Define inference loop ###
@@ -58,7 +56,7 @@ def train(model, guide):
         for step in range(n_steps):
                 #print(step)
                 svi.step(data)
-                if n_steps % 100 == 0:
+                if step % 100 == 0:
                         print(step)
                        
 train(model,guide)
@@ -71,15 +69,16 @@ pop_dist = pyro.param("q_conc")
 mean_alpha = dist.Gamma(k,rate).mean
 dir_params = mean_alpha*pop_dist
 dir_params = dir_params.tolist()
+
 ### Given posterior of hyper-parameters, sample new bag and infer posterior
 
 draws = [0.,1.]
 
-def lower_model(draws = draws):
+def lower_level_model(draws = draws):
        theta = pyro.sample("bag_theta", dist.Dirichlet(torch.tensor(dir_params)))
        return pyro.sample("draws", dist.Multinomial(sum(data), theta), obs = torch.tensor(data))
 
-def lower_guide(data = data):
+def lower_level_guide(data = data):
         conc = pyro.param("conc", torch.ones(colors))
         return pyro.sample("bag_theta", dist.Dirichlet(conc))
  
@@ -88,13 +87,3 @@ new_bag = dist.Dirichlet(pyro.param("conc")).mean
 
 ### Finally - predict! ###
 guess = pyro.sample("guess", dist.Categorical(new_bag))
-'''
-def naive_model(data = data):
-       theta = pyro.sample("bag_theta", dist.Dirichlet(torch.ones(colors)))
-       return pyro.sample("draws", dist.Multinomial(sum(data), theta), obs = torch.tensor(data))
-
-def naive_guide(data = data):
-        conc = pyro.param("control_conc", torch.ones(colors))
-        return pyro.sample("bag_theta", dist.Dirichlet(conc))
-'''
-train(control_model, control_guide)
