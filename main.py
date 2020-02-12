@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Sun Jan 26 23:44:13 2020
-
-@author: KEITH618
-"""
 
 import torch
 import pyro
