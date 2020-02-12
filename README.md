@@ -15,7 +15,7 @@ be simplified to a Beta distribution), but this does not allow for learning "acr
 In other words, supposing our prior is a uniform Dirichlet distribution, then the best a non-hierarchical Bayesian model can do is either (a) apply the same flat prior to each successive bag, thus learning from scratch with each bag, or (b) use the posterior Dirichlet from each bag as a prior on next bag, which is equivalent to treating all previous draws as having come from one pooled bag, thus missing out on important structure in the data. This failure can best be seen by an environment in which all bags are either uniformly black or uniformly white. Upon seeing a lot of these bags and drawing a black ball from a new bag, it seems rational to assign very high probability to the bag being uniformly black. But the above model cannot
 achieve this
 
-# More Hierarchy!
+## More Hierarchy!
 
 Intuitively what's going on is that we have two very different parameters in mind when we approach this problem - homogeneity within
 bag and across the population as a whole. These can be very different (as in the above case), and . Fortunately we can decompose our Dirichlet parameters into a scalar and a vector, the scalar representing the "clumpiness" of colours (the smaller the value, the more likely bags are to be homogenous) and a vector representing the overall population distribution of colors. We want to learn these parameters as they will define a posterior Dirichlet distribution which can better handle new bags. We use a Gamma and a Dirichlet distribution for our scalar and vector parameter respectively (it's a bit confusing that the distribution of one of our parameters of our lower-level Dirichlet is itself a Dirichlet, but it's easy to think of as it defining the population mean of our lower-level Dirichlet, with the scalar determining the variation between bags). 
@@ -23,7 +23,7 @@ bag and across the population as a whole. These can be very different (as in the
 That's about it for modelling! We set the priors on these as Gamma(1,1) (an exponential with mean 1), and Dir([1,1,1]) (uniform) respectively, and define the data we've seen, define our generative model, condition in on the observed data, and define
 our guide function so we can get on with Variational Inference. By declaring pyro.param in the guide, we're specifying which variables to update at each step so that the difference between the latent variables (specified by pyro.sample) is reduced
 
-# Playing around with it
+## Playing around with it
 
 Have a go experimenting with different numbers of colors, different input data etc. One of the coolest results of this kind of model
 (to my mind) is that if you train it on entirely all-black and all-white bags, then if you show it a bag and it draws one red ball, it assigns very high probability to the rest of the balls being red! This is a pretty cool "human-like" inference to make since on the face of it - I think it's really cool how Hierarchical models can get more abstract, "structured" learning (Brenden Lake and Joshua Tenenbaum are doing really cool work in this area atm.)
