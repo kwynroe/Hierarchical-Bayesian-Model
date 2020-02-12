@@ -4,6 +4,9 @@ Created on Mon Feb  3 11:00:28 2020
 
 @author: KEITH618
 """
+
+### Here we have the agent learn without hyper-hyper-paramaters. ###
+### Play around and see how it can't learn "abstract" hypotheses like "all bags are homogenous" ###
 import torch
 import pyro
 import pyro.distributions as dist
