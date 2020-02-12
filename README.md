@@ -26,5 +26,5 @@ our guide function so we can get on with Variational Inference. By declaring pyr
 ## Playing around with it
 
 Have a go experimenting with different numbers of colors, different input data etc. One of the coolest results of this kind of model
-(to my mind) is that if you train it on entirely all-black and all-white bags, then if you show it a bag and it draws one red ball, it assigns very high probability to the rest of the balls being red! This is a pretty cool "human-like" inference to make since on the face of it - I think it's really cool how Hierarchical models can get more abstract, "structured" learning (Brenden Lake and Joshua Tenenbaum are doing really cool work in this area atm.)
+(to my mind) is that if you train it on entirely all-black and all-white bags, then if you show it a bag and it draws one red ball, it assigns very high probability to the rest of the balls being red! This is a pretty cool "human-like" inference to make on the face of it - I think it's really cool how Hierarchical models can get more abstract, "structured" learning (Brenden Lake and Joshua Tenenbaum are doing really cool work in this area atm.)
 
